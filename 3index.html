@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Styled Headings</title>
+    <style>
+        body {
+            font-family: "Times New Roman", Times, serif; /* 字體樣式 */
+            margin: 20px;
+        }
+
+        h1 {
+            font-size: 2.5em; /* 字體大小 */
+            font-weight: bold;
+            color: black; /* 文字顏色 */
+            text-shadow: 5px 4px 3px pink; /* 粉色陰影 */
+            margin: 0px 0;
+            position: relative;
+        }
+
+        h1::before {
+            content: "";
+            position: absolute;
+            top: 0px; /* 線條在文字上方 */
+            left: 0;
+            width: 70%;
+            height: 4px;
+            background-color: black; /* 線條顏色 */
+            box-shadow: 2px 2px 3px pink; /* 添加粉色陰影 */
+        }
+
+        h2 {
+            font-size: 2em; /* 字體大小 */
+            font-style: italic; /* 斜體樣式 */
+            color: black; /* 文字顏色 */
+            display: inline-block;
+            padding: 1px 1px; /* 調整內邊距 */
+            margin: 15px 0;
+            background: none; /* 無背景色 */
+            position: relative;
+            border: 3px solid yellow; /* 黃色外框 */
+            width: 100%; /* 撐滿父容器 */
+            box-sizing: border-box; /* 包括邊框在寬度內 */
+            box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.5), /* 立體陰影 */
+                        -4px -4px 6px rgba(255, 255, 255, 0.5); /* 亮邊效果 */
+        }
+
+        h2::before {
+            content: "";
+            position: absolute;
+            top: 0; /* 緊貼黃色外框 */
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 2px solid black; /* 黑色內框 */
+            pointer-events: none; /* 防止遮擋文字 */
+        }
+
+        h3 {
+            font-size: 1.5em; /* 字體大小 */
+            font-weight: bold;
+            color: black;
+            text-decoration: underline; /* 下劃線 */
+            margin: 15px 0;
+            text-align: right; /* 靠右對齊 */
+        }
+    </style>
+</head>
+<body>
+    <h1>This is heading 1</h1>
+    <h2>This is heading 2</h2>
+    <h3>This is heading 3</h3>
+</body>
+</html>
