@@ -10,13 +10,14 @@
             margin: 20px;
         }
 
-        h1 {
+         h1 {
             font-size: 2.5em; /* 字體大小 */
             font-weight: bold;
             color: black; /* 文字顏色 */
-            text-shadow: 5px 4px 3px pink; /* 粉色陰影 */
+            text-shadow: 4px 4px 3px pink; /* 粉色陰影 */
             margin: 0px 0;
             position: relative;
+            display: inline-block; /* 讓 h1 的寬度根據內容變化 */
         }
 
         h1::before {
@@ -24,8 +25,8 @@
             position: absolute;
             top: 0px; /* 線條在文字上方 */
             left: 0;
-            width: 70%;
-            height: 4px;
+            width: 100%; /* 線條寬度自動匹配文字寬度 */
+            height: 3px;
             background-color: black; /* 線條顏色 */
             box-shadow: 2px 2px 3px pink; /* 添加粉色陰影 */
         }
@@ -73,3 +74,4 @@
     <h3>This is heading 3</h3>
 </body>
 </html>
+
