@@ -209,17 +209,91 @@ function handleLocationError(browserHasGeolocation) {
     );
 }
 
-        function searchFood() {
-            const query = document.getElementById("search-input").value;
-            const resultsDiv = document.getElementById("search-results");
+        let map; // 儲存地圖變數
+let service; // Google Places 服務
+let markers = []; // 標記點的集合
 
-            if (!query) {
-                resultsDiv.innerHTML = "<p>請輸入搜尋內容。</p>";
-                return;
-            }
+function searchFood() {
+    const query = document.getElementById("search-input").value.trim();
+    const resultsDiv = document.getElementById("search-results");
 
-            resultsDiv.innerHTML = `<p>正在搜尋附近的 <strong>${query}</strong>...</p>`;
-        }
+    if (!query) {
+        resultsDiv.innerHTML = "<p>請輸入搜尋關鍵字。</p>";
+        return;
+    }
+
+    // 獲取使用者位置
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+            const userLocation = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+            };
+
+            // 清除先前的地圖與標記
+            clearMap();
+
+            // 初始化地圖並設定為使用者的位置
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: userLocation,
+                zoom: 14,
+            });
+
+            // 進行搜尋
+            service = new google.maps.places.PlacesService(map);
+            const request = {
+                location: userLocation,
+                radius: 2000, // 搜尋半徑 2 公里
+                keyword: query, // 使用者輸入的關鍵字
+            };
+
+            service.nearbySearch(request, (results, status) => {
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                    resultsDiv.innerHTML = `<p>找到 ${results.length} 筆與 "<strong>${query}</strong>" 相關的餐廳：</p>`;
+                    displaySearchResults(results);
+                } else {
+                    resultsDiv.innerHTML = "<p>找不到符合條件的餐廳。</p>";
+                }
+            });
+        });
+    } else {
+        alert("您的瀏覽器不支援地理位置功能，無法搜尋餐廳。");
+    }
+}
+
+// 清除地圖上的標記
+function clearMap() {
+    markers.forEach(marker => marker.setMap(null));
+    markers = [];
+    document.getElementById("map").innerHTML = ""; // 清除地圖內容
+}
+
+// 顯示搜尋結果並標記於地圖上
+function displaySearchResults(results) {
+    results.forEach((place) => {
+        const marker = new google.maps.Marker({
+            position: place.geometry.location,
+            map: map,
+            title: place.name,
+        });
+
+        markers.push(marker);
+
+        // 設定 InfoWindow 顯示餐廳資訊
+        const infoWindow = new google.maps.InfoWindow({
+            content: `
+                <h3>${place.name}</h3>
+                <p>星等: ${place.rating || "無"}</p>
+                <p>地址: ${place.vicinity}</p>
+            `,
+        });
+
+        marker.addListener("click", () => {
+            infoWindow.open(map, marker);
+        });
+    });
+}
+
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCsDdT7DUIkhrRR0i0n0uPwxWX6zCxboBU&libraries=places"></script>
 </body>
