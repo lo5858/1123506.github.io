@@ -46,21 +46,19 @@
     </style>
 </head>
 <body>
-    <!-- 首頁 -->
+    
     <div id="home-page">
         <h1>Food Map</h1>
         <button onclick="showPage('recommend-page')">附近美食推薦地圖</button>
         <button onclick="showPage('search-page')">搜尋美食</button>
     </div>
 
-    <!-- 附近美食推薦地圖 -->
     <div id="recommend-page" class="hidden">
         <h1>附近美食推薦地圖</h1>
         <div id="recommend-map" class="map-container"></div>
         <button onclick="goBack()">返回上頁</button>
     </div>
-
-    <!-- 搜尋美食 -->
+    
     <div id="search-page" class="hidden">
         <h1>搜尋美食</h1>
         <input type="text" id="search-input" placeholder="輸入美食關鍵字">
@@ -69,15 +67,12 @@
         <div id="search-map" class="map-container"></div>
         <button onclick="goBack()">返回上頁</button>
     </div>
-
-    <!-- Google Maps API -->
+    
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCsDdT7DUIkhrRR0i0n0uPwxWX6zCxboBU&libraries=places"></script>
     <script>
         let map;
         let service;
         let markers = [];
-
-        // 切換頁面
         function showPage(pageId) {
             document.getElementById("home-page").classList.add("hidden");
             document.getElementById("recommend-page").classList.add("hidden");
@@ -90,13 +85,9 @@
                 clearMapContainer("search-map");
             }
         }
-
-        // 返回首頁
         function goBack() {
             showPage("home-page");
         }
-
-        // 清除地圖容器
         function clearMapContainer(containerId) {
             const container = document.getElementById(containerId);
             container.innerHTML = ""; // 清空地圖容器
@@ -106,7 +97,6 @@
             container.parentNode.replaceChild(newMapDiv, container);
         }
 
-        // 初始化地圖
         function initMap(containerId, location) {
             const defaultLocation = { lat: 25.033964, lng: 121.564468 }; // 台北市中心
             map = new google.maps.Map(document.getElementById(containerId), {
@@ -115,7 +105,6 @@
             });
         }
 
-        // 顯示附近餐廳
         function loadNearbyRestaurants() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition((position) => {
@@ -141,7 +130,6 @@
             }
         }
 
-        // 搜尋美食
         function searchFood() {
             const query = document.getElementById("search-input").value.trim();
             if (!query) {
@@ -170,8 +158,6 @@
                 });
             }
         }
-
-        // 顯示結果
         function displayResults(results, status) {
             if (status === google.maps.places.PlacesServiceStatus.OK) {
                 clearMarkers();
@@ -198,8 +184,6 @@
                 alert("找不到符合條件的結果。");
             }
         }
-
-        // 清除標記
         function clearMarkers() {
             markers.forEach(marker => marker.setMap(null));
             markers = [];
