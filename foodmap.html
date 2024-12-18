@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Food Map</title>
     <style>
-        /* 全局樣式 */
+
         body {
             margin: 0;
             padding: 0;
@@ -15,7 +15,7 @@
             text-align: center;
         }
 
-        /* 頁面標題樣式 */
+
         h1 {
             font-size: 3rem;
             color: #A5441F;
@@ -23,7 +23,7 @@
             text-shadow: 2px 2px #FFDCA9;
         }
 
-        /* 按鈕外框 */
+
         .button-container {
             display: flex;
             justify-content: center;
@@ -32,7 +32,7 @@
             gap: 50px;
         }
 
-        /* 方塊樣式 */
+   
         .button-box {
             width: 300px;
             height: 200px;
@@ -49,7 +49,7 @@
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
         }
 
-        /* 方塊內文字 */
+ 
         .button-box h2 {
             color: #A5441F;
             margin: 0;
@@ -63,7 +63,7 @@
             margin-top: 10px;
         }
 
-        /* 返回按鈕 */
+     
         .back-button {
             display: inline-block;
             padding: 10px 20px;
@@ -81,7 +81,7 @@
             background-color: #E8672E;
         }
 
-        /* 地圖樣式 */
+     
         #map {
             width: 90%;
             height: 400px;
@@ -90,23 +90,23 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
-        /* 隱藏頁面 */
+   
         .hidden {
             display: none;
         }
     </style>
 </head>
 <body>
-    <!-- 主頁面 -->
+ 
     <div id="main-page">
         <h1>Food Map</h1>
         <div class="button-container">
-            <!-- 附近美食推薦按鈕 -->
+          
             <div class="button-box" onclick="showNearbyRecommendations()">
                 <h2>附近美食推薦地圖</h2>
                 <p>Nearby food recommendation map</p>
             </div>
-            <!-- 搜尋美食按鈕 -->
+          
             <div class="button-box" onclick="showSearchPage()">
                 <h2>搜尋美食</h2>
                 <p>Search for food</p>
@@ -114,14 +114,14 @@
         </div>
     </div>
 
-    <!-- 附近美食推薦頁面 -->
+   
     <div id="recommendation-page" class="hidden">
         <h1>附近美食推薦</h1>
         <div id="map"></div>
         <button class="back-button" onclick="goBack()">返回上頁</button>
     </div>
 
-    <!-- 搜尋美食頁面 -->
+  
     <div id="search-page" class="hidden">
         <h1>搜尋美食</h1>
         <input type="text" id="search-input" placeholder="輸入想找的美食">
@@ -131,7 +131,7 @@
     </div>
 
     <script>
-        // 切換頁面邏輯
+    
         function showNearbyRecommendations() {
             document.getElementById("main-page").classList.add("hidden");
             document.getElementById("recommendation-page").classList.remove("hidden");
@@ -149,16 +149,25 @@
             document.getElementById("main-page").classList.remove("hidden");
         }
 
-        // 初始化 Google 地圖
         function initMap() {
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+            const userLocation = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+            };
+
+     
             const map = new google.maps.Map(document.getElementById("map"), {
-                center: { lat: 25.033964, lng: 121.564468 }, // 台北 101 作為預設位置
+                center: userLocation,
                 zoom: 15,
             });
 
+    
             const service = new google.maps.places.PlacesService(map);
             const request = {
-                location: { lat: 25.033964, lng: 121.564468 },
+                location: userLocation,
                 radius: 1000,
                 type: "restaurant",
             };
@@ -171,12 +180,35 @@
                             map,
                             title: place.name,
                         });
+
+                        const infoWindow = new google.maps.InfoWindow({
+                            content: `<h3>${place.name}</h3>
+                                      <p>星等: ${place.rating || "無"}</p>
+                                      <p>${place.vicinity}</p>`,
+                        });
+
+                        marker.addListener("click", () => {
+                            infoWindow.open(map, marker);
+                        });
                     });
                 }
             });
-        }
+        }, () => {
+            handleLocationError(true);
+        });
+    } else {
+        handleLocationError(false);
+    }
+}
 
-        // 搜尋美食功能
+function handleLocationError(browserHasGeolocation) {
+    alert(
+        browserHasGeolocation
+            ? "Error: 請允許取得您的位置來顯示附近美食。"
+            : "Error: 您的瀏覽器不支援地理位置功能。"
+    );
+}
+
         function searchFood() {
             const query = document.getElementById("search-input").value;
             const resultsDiv = document.getElementById("search-results");
@@ -189,8 +221,6 @@
             resultsDiv.innerHTML = `<p>正在搜尋附近的 <strong>${query}</strong>...</p>`;
         }
     </script>
-
-    <!-- Google 地圖 API -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCsDdT7DUIkhrRR0i0n0uPwxWX6zCxboBU&libraries=places"></script>
 </body>
 </html>
